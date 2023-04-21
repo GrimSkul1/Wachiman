@@ -5,6 +5,8 @@ import numpy as np
 import os 
 from pathlib import Path
 import cv2
+import subprocess
+
 
 filename = ""
 violencia =  0
@@ -197,17 +199,20 @@ class App(tk.Tk):
         instr_text = tk.Text(instr_frame, width=60, height=20)
         instr_text.pack(side=tk.LEFT, fill=tk.BOTH)
 
+        text = "Este es un prototipo del producto final, por lo que la capacidad de la I.A. se ve limitada bajo los recursos, presupuesto y disponibilidad de sus desarrolladores."
+        #italic_text = "\x1B[3m" + text + "\x1B3m]"
+  
         # Agregamos el texto de las instrucciones
         instr_text.config(state=("normal"))
         instr_text.insert(tk.END, "Instrucciones:\n\n")
         instr_text.insert(tk.END, "1. Carga un video haciendo clic en el botón 'Cargar video'.\n")
-        instr_text.insert(tk.END, "2. Selecciona el tipo de armas a analizar en el menú desplegable.\n")
-        instr_text.insert(tk.END, "3. Selecciona la cantidad de frames a analizar en el menú desplegable.\n")
-        instr_text.insert(tk.END, "4. Haz clic en el botón 'Analizar' para iniciar el análisis.\n")
-        instr_text.insert(tk.END, "5. Los resultados del análisis se mostrarán en la consola.\n")
-        instr_text.insert(tk.END, "6. Para salir del programa, haz clic en el botón 'Salir'.\n\n")
+        instr_text.insert(tk.END, "2. Haz clic en el botón 'Analizar' para iniciar el análisis.\n")
+        instr_text.insert(tk.END, "3. Los resultados del análisis se mostrarán en la consola.\n")
+        instr_text.insert(tk.END, "4. Para salir del programa, utlize la tecla 'ESCAPE'.\n\n")
         instr_text.insert(tk.END,
                           "Nota: El análisis puede tardar unos minutos dependiendo del tamaño del video y la cantidad de frames seleccionados.")
+        instr_text.insert(tk.END,  
+                          '\033[1m'"\n\n\n\n\n\n\n" + text)
         instr_text.config(state=("disabled"))
 
         # Creamos un botón para cerrar la ventana de instrucciones
