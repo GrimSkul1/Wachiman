@@ -7,12 +7,15 @@ from pathlib import Path
 import cv2
 
 filename = ""
+violencia =  0
+aux_violencia = False
 #filename = "C:/Users/User/Documents/GitHub/Wachiman/ak47.mp4"
 
 class App(tk.Tk):
     def __init__(self, master):
         self.master = master
         self.master.title("Wachiman")
+     
 
         self.master.title("Wachiman")
         self.master.geometry("600x450")
@@ -45,11 +48,15 @@ class App(tk.Tk):
         self.textbox.pack(side=tk.TOP, pady=(10, 20))
 
         # Barra de progreso para mostrar el progreso del análisis
-        self.progress_bar = ttk.Progressbar(self.master, orient=tk.HORIZONTAL, mode="determinate", length=300)
+        self.progress_bar = ttk.Progressbar(self.master, orient=tk.HORIZONTAL, mode="determinate", length=100)
         self.progress_bar.pack()
+        if aux_violencia:
+            while aux_violencia == True:
+                self.progress_bar = ttk.Progressbar(self.master, orient=tk.HORIZONTAL, mode="determinate", length=300)
+                self.progress_bar.pack()
 
         # Label para mostrar el porcentaje de armas encontradas
-        self.weapon_percentage = 0
+        self.weapon_percentage = violencia
         self.percentage_label = tk.Label(self.master, text="% de Violencia",fg="red",bg="white")
         self.percentage_label.pack()
 
@@ -91,7 +98,7 @@ class App(tk.Tk):
 
         print(self.filename)
         video = cv2.VideoCapture(self.filename)
-    
+        violencia = 0
 
         while video:
         
@@ -99,11 +106,7 @@ class App(tk.Tk):
             height, width, channels = img.shape
             aux_width  = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
             aux_height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            #fps = int(cap.get(cv2.CAP_PROP_FPS))
-        # fps = int(self.video.get(cv2.CAP_PROP_FPS))
-        #  output = cv2.VideoWriter('output.mp4', fourcc, fps, (width, height))
-
-
+            duration = int(video.get(cv2.CAP_PROP_POS_MSEC))
             # width = 512
             # height = 512
 
@@ -137,19 +140,24 @@ class App(tk.Tk):
                         confidences.append(float(confidence))
                         class_ids.append(class_id)
 
-                    
-                    
 
             indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)
             print(indexes)
-            fps = video.get(cv2.CAP_PROP_POS_MSEC)
-            # videotime = indexes / fps
-
-
-            if indexes == 0: print("Arma detectada en el tiempo: ", (fps/1000), "intensidad de ")
-            elif indexes == 1: print("Arma detectada en el tiempo: ", (fps/1000), "intensidad de ")
-            elif indexes == 2: print("Arma detectada en el tiempo: ", (fps/1000), "intensidad de ")
-            #print(fps/1000)
+            fps = video.get(cv2.CAP_PROP_POS_MSEC)            
+            
+            if indexes == 0: 
+                print("Arma detectada en el tiempo: ", (fps/1000))
+                violencia =  violencia + 1
+                aux_violencia = True
+            elif indexes == 1:
+                print("Arma detectada en el tiempo: ", (fps/1000))
+                violencia =  violencia + 1
+                aux_violencia = True
+            elif indexes == 2: 
+                print("Arma detectada en el tiempo: ", (fps/1000))
+                violencia =  violencia + 1
+                aux_violencia = True
+    
             font = cv2.FONT_HERSHEY_PLAIN
             for i in range(len(boxes)):
                 if i in indexes:
@@ -157,16 +165,23 @@ class App(tk.Tk):
                     label = str(classes[class_ids[i]])
                     color = colors[class_ids[i]]
                     cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
-                    cv2.putText(img, label, (x, y + 30), font, 3, color, 3)
-
-                    
+                    cv2.putText(img, label, (x, y + 30), font, 3, color, 3)                    
 
             # frame = cv2.resize(img, (width, height), interpolation=cv2.INTER_AREA)
             cv2.imshow("Image", img)
             key = cv2.waitKey(1)
             if key == 27:
                 break
+        
+        #Aqui se calcula el porcentaje de violencia en el video correspondiente a su duracion
+        if violencia > 1:
+            temp = (violencia/duration)*100
+            print(temp)
+            print("Porcentaje de violencia ", temp,"%")
+            violencia = temp
 
+        else:
+            print("Violencia no detectada! ")
 
     def display_instructions(self):
         # Creamos una nueva ventana para mostrar las instrucciones
