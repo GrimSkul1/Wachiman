@@ -18,7 +18,7 @@ class App(tk.Tk):
         self.master.title("Wachiman")
 
         self.master.title("Wachiman")
-        self.master.geometry("600x450")
+        self.master.geometry("720x512")
 
         self.create_widgets()
 
@@ -77,6 +77,9 @@ class App(tk.Tk):
         image_label = tk.Label(self.master, image=photo, bg="white")
         image_label.image = photo  # Necesario para evitar que la imagen se pierda debido a la recolección de basura
         image_label.pack()
+    
+    def web_cam(self):
+        video = cv2.VideoCapture.self.filename
 
     def analyze_file(self):
         video = cv2.VideoCapture(self.filename)
@@ -153,7 +156,7 @@ class App(tk.Tk):
                     label = str(classes[class_ids[i]])
                     color = colors[class_ids[i]]
                     cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
-                    cv2.putText(img, label, (x, y + 30), font, 3, color, 3)
+                    cv2.putText(img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
                     # frame = cv2.resize(img, (width, height), interpolation=cv2.INTER_AREA)
             cv2.imshow("Image", img)
@@ -231,8 +234,8 @@ class App(tk.Tk):
 if __name__ == '__main__':
     root = tk.Tk()
     root.configure(background="white")
-    net = cv2.dnn.readNet("yolov3_weapon.weights", "yolov3_t.cfg")
-    classes = ["Weapon", "Knife"]
+    net = cv2.dnn.readNet(r"C:\Users\User\Documents\GitHub\Wachiman\custom-yolov4-tiny-detector_best (7).weights", r"C:\Users\User\Documents\GitHub\Wachiman\yolov4-custom.cfg")
+    classes = ["Weapon"]
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i - 1] for i in
                      net.getUnconnectedOutLayers()]  # Capas para el output de los frames detectados
